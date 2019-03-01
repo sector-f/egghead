@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			LambdaChan
+		</title>
+	</head>
+	<body>
+		{{ range . }}
+		<p>
+			<a href="/boards/{{ .name }}">{{ .name }}</a>
+		</p>
+		{{ end }}
+	</body>
+</html>
