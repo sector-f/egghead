@@ -1,62 +1,44 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 
-	_ "github.com/gorilla/mux"
-	"github.com/sector-f/eggchan"
+	"github.com/gorilla/mux"
+	// "github.com/sector-f/eggchan"
 )
 
-type page struct {
-	template string // Parsed into template.Template
-	route    string // Frontend route
-	backend  string // API endpoint that gets used
-	data     interface{}
-}
+var apiEndpoint string = "http://127.0.0.1:8000"
 
-type boardsData struct {
-	BaseUrl string
-	Boards  []eggchan.Board
+type Page interface {
+	Route() string
+	Template() string
+	SetTemplate(*template.Template)
+	Handler() http.HandlerFunc
 }
 
 func main() {
-	apiEndpoint := "http://127.0.0.1:8000"
-
-	pages := []page{
-		page{
-			template: "index.html",
-			route:    "/",
-			backend:  "/boards",
-			data:     []eggchan.Board{},
-		},
+	pages := []Page{
+		&HomePage{},
+		&BoardPage{},
 	}
 
+	r := mux.NewRouter()
+
 	for _, page := range pages {
-		template, err := template.ParseFiles(page.template)
+		template, err := template.ParseFiles(page.Template())
 		if err != nil {
-			fmt.Println("Failed to load ", page.template, ": ", err)
+			fmt.Println("Failed to load ", page.Template(), ": ", err)
 			continue
 		}
+		page.SetTemplate(template)
 
-		http.HandleFunc(
-			page.route,
-			func(w http.ResponseWriter, r *http.Request) {
-				response, err := http.Get(apiEndpoint + page.backend)
-				if err != nil {
-					return // TODO: add actual error handling
-				}
-				defer response.Body.Close()
-
-				body, err := ioutil.ReadAll(response.Body)
-				json.Unmarshal(body, &page.data)
-				template.Execute(w, page.data)
-			},
+		r.HandleFunc(
+			page.Route(),
+			page.Handler(),
 		)
 	}
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", r)
 }
