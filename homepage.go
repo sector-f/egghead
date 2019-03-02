@@ -5,12 +5,15 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/sector-f/eggchan"
 )
 
 type HomePage struct {
 	template *template.Template
+	modified time.Time
 }
 
 func (p HomePage) Route() string {
@@ -25,6 +28,10 @@ func (p *HomePage) SetTemplate(t *template.Template) {
 	p.template = t
 }
 
+func (p *HomePage) SetTime(t time.Time) {
+	p.modified = t
+}
+
 func (p HomePage) Handler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		response, err := http.Get(apiEndpoint + "/boards")
@@ -36,6 +43,18 @@ func (p HomePage) Handler() http.HandlerFunc {
 		body, err := ioutil.ReadAll(response.Body)
 		boards := []eggchan.Board{}
 		json.Unmarshal(body, &boards)
+
+		fileInfo, err := os.Stat(p.Template())
+		if err == nil {
+			if fileInfo.ModTime().After(p.modified) {
+				newTemplate, err := template.ParseFiles(p.Template())
+				if err == nil {
+					p.SetTime(fileInfo.ModTime())
+					p.SetTemplate(newTemplate)
+				}
+			}
+		}
+
 		p.template.Execute(w, boards)
 	}
 }
