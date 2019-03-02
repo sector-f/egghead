@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	// "fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -11,39 +10,44 @@ import (
 	"github.com/sector-f/eggchan"
 )
 
-type BoardPage struct {
+type ThreadPage struct {
 	template *template.Template
 }
 
-func (p BoardPage) Route() string {
-	return "/{board}"
+func (p ThreadPage) Route() string {
+	return "/{board}/{thread}"
 }
 
-func (p BoardPage) Template() string {
-	return "board.html"
+func (p ThreadPage) Template() string {
+	return "thread.html"
 }
 
-func (p *BoardPage) SetTemplate(t *template.Template) {
+func (p *ThreadPage) SetTemplate(t *template.Template) {
 	p.template = t
 }
 
-func (p BoardPage) Handler() http.HandlerFunc {
+func (p ThreadPage) Handler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
+
 		boardName, exists := vars["board"]
 		if !exists {
 			return
 		}
-		response, err := http.Get(apiEndpoint + "/boards/" + boardName)
+
+		threadID, exists := vars["thread"]
+		if !exists {
+			return
+		}
+
+		response, err := http.Get(apiEndpoint + "/boards/" + boardName + "/" + threadID)
 		if err != nil {
 			return // TODO: add actual error handling
 		}
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
-		// text, err := json.MarshalIndent(body, "", "    ")
-		// fmt.Println(string(text))
-		board := eggchan.BoardReply{}
+		board := eggchan.ThreadReply{}
 		json.Unmarshal(body, &board)
 		p.template.Execute(w, board)
 	}

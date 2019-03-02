@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			{{ .Thread.PostNum }}
+		</title>
+	</head>
+	<body>
+		<div style="padding: 5px;">
+			<div>
+				<span>{{ .Thread.Author }} - {{ .Thread.PostNum }}</span>
+			</div>
+			<div>
+				{{ .Thread.Comment }}
+			</div>
+		</div>
+		{{ range .Posts }}
+		<div style="padding: 5px;">
+			<div>
+				<span>{{ .Author }} - {{ .PostNum }}</span>
+			</div>
+			<div>
+				{{ .Comment }}
+			</div>
+		</div>
+		{{ end }}
+	</body>
+</html>

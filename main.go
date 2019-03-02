@@ -22,16 +22,19 @@ func main() {
 	pages := []Page{
 		&HomePage{},
 		&BoardPage{},
+		&ThreadPage{},
 	}
 
 	r := mux.NewRouter()
 
 	for _, page := range pages {
+		fmt.Printf("Loading %s...", page.Template())
 		template, err := template.ParseFiles(page.Template())
 		if err != nil {
-			fmt.Println("Failed to load ", page.Template(), ": ", err)
+			fmt.Printf("failed: %s\n", err)
 			continue
 		}
+		fmt.Printf("succeeded\n")
 		page.SetTemplate(template)
 
 		r.HandleFunc(

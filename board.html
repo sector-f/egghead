@@ -2,14 +2,24 @@
 <html>
 	<head>
 		<title>
-			{{ .Board.Name }}
+		{{ if .Board.Description.Valid }}
+			/{{ .Board.Name }}/ - {{ .Board.Description.String }}
+		{{ else }}
+			/{{ .Board.Name }}/
+		{{ end }}
 		</title>
 	</head>
 	<body>
+		{{ $board := .Board.Name }}
 		{{ range .Threads }}
-		<p>
-			{{ .Comment }}
-		</p>
+		<div style="padding: 5px;">
+			<div>
+				<span>{{ .Author }} - <a href="/{{ $board }}/{{ .PostNum }}">{{ .PostNum }}</a></span>
+			</div>
+			<div>
+				{{ .Comment }}
+			</div>
+		</div>
 		{{ end }}
 	</body>
 </html>
