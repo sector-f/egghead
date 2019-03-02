@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	// "github.com/sector-f/eggchan"
 )
 
 var apiEndpoint string = "http://127.0.0.1:8000"

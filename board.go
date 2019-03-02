@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	// "fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -41,8 +40,6 @@ func (p BoardPage) Handler() http.HandlerFunc {
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
-		// text, err := json.MarshalIndent(body, "", "    ")
-		// fmt.Println(string(text))
 		board := eggchan.BoardReply{}
 		json.Unmarshal(body, &board)
 		p.template.Execute(w, board)
