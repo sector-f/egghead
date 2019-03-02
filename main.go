@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -14,6 +16,7 @@ type Page interface {
 	Route() string
 	Template() string
 	SetTemplate(*template.Template)
+	SetTime(time.Time)
 	Handler() http.HandlerFunc
 }
 
@@ -28,11 +31,20 @@ func main() {
 
 	for _, page := range pages {
 		fmt.Printf("Loading %s...", page.Template())
+
 		template, err := template.ParseFiles(page.Template())
 		if err != nil {
 			fmt.Printf("failed: %s\n", err)
 			continue
 		}
+
+		fileInfo, err := os.Stat(page.Template())
+		if err != nil {
+			fmt.Printf("failed: could not stat file\n")
+			continue
+		}
+		page.SetTime(fileInfo.ModTime())
+
 		fmt.Printf("succeeded\n")
 		page.SetTemplate(template)
 

@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/sector-f/eggchan"
@@ -12,6 +14,7 @@ import (
 
 type ThreadPage struct {
 	template *template.Template
+	modified time.Time
 }
 
 func (p ThreadPage) Route() string {
@@ -24,6 +27,10 @@ func (p ThreadPage) Template() string {
 
 func (p *ThreadPage) SetTemplate(t *template.Template) {
 	p.template = t
+}
+
+func (p *ThreadPage) SetTime(t time.Time) {
+	p.modified = t
 }
 
 func (p ThreadPage) Handler() http.HandlerFunc {
@@ -49,6 +56,18 @@ func (p ThreadPage) Handler() http.HandlerFunc {
 		body, err := ioutil.ReadAll(response.Body)
 		board := eggchan.ThreadReply{}
 		json.Unmarshal(body, &board)
+
+		fileInfo, err := os.Stat(p.Template())
+		if err == nil {
+			if fileInfo.ModTime().After(p.modified) {
+				newTemplate, err := template.ParseFiles(p.Template())
+				if err == nil {
+					p.SetTime(fileInfo.ModTime())
+					p.SetTemplate(newTemplate)
+				}
+			}
+		}
+
 		p.template.Execute(w, board)
 	}
 }
