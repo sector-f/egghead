@@ -1,11 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -73,5 +78,77 @@ func (p ThreadPage) GetHandler() http.HandlerFunc {
 }
 
 func (p ThreadPage) PostHandler() http.HandlerFunc {
-	return nil
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		boardName, exists := vars["board"]
+		if !exists {
+			return
+		}
+
+		threadID, exists := vars["thread"]
+		if !exists {
+			return
+		}
+
+		r.Body = http.MaxBytesReader(w, r.Body, 4096)
+		err := r.ParseMultipartForm(32 << 20)
+		if err != nil {
+			return
+		}
+
+		r.ParseMultipartForm(32 << 20)
+		comment := strings.TrimSpace(r.FormValue("comment"))
+		if comment == "" {
+			return
+		}
+
+		author := strings.TrimSpace(r.FormValue("author"))
+		if author == "" {
+			author = "Anonymous"
+		}
+
+		var buf bytes.Buffer
+		var client http.Client
+		writer := multipart.NewWriter(&buf)
+
+		err = writer.WriteField("author", author)
+		if err != nil {
+			return
+		}
+
+		err = writer.WriteField("comment", comment)
+		if err != nil {
+			return
+		}
+
+		writer.Close()
+
+		request, err := http.NewRequest("POST", apiEndpoint+"/boards/"+boardName+"/"+threadID, &buf)
+		if err != nil {
+			return
+		}
+		request.Header.Set("Content-Type", writer.FormDataContentType())
+
+		response, err := client.Do(request)
+		if err != nil {
+			return
+		}
+
+		if response.StatusCode != http.StatusCreated {
+			fmt.Println("Error")
+			return
+		}
+
+		responseMessage, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return
+		}
+
+		postResponse := eggchan.PostCommentResponse{}
+		err = json.Unmarshal(responseMessage, &postResponse)
+		if err != nil {
+			return
+		}
+		http.Redirect(w, r, "/"+boardName+"/"+strconv.Itoa(postResponse.ReplyTo), 303)
+	}
 }

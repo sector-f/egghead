@@ -139,7 +139,7 @@ func (p BoardPage) PostHandler() http.HandlerFunc {
 			return
 		}
 
-		postResponse := eggchan.PostResponse{}
+		postResponse := eggchan.PostThreadResponse{}
 		err = json.Unmarshal(responseMessage, &postResponse)
 		if err != nil {
 			return

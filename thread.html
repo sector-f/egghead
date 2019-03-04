@@ -11,6 +11,11 @@
 		<link rel="stylesheet" href="/static/eggchan.css">
 	</head>
 	<body>
+		<form action="" method="post" enctype="multipart/form-data">
+			Name: <input type="text" name="author"><br>
+			Comment: <input type="text" name="comment"><br>
+			<input type="submit" value="Post">
+		</form>
 		<div class="post">
 			<div>
 				<span><span class="username">{{ .Thread.Author }}</span> {{ .Thread.Time.Format "2006/1/2 15:04:05" }} No.{{ .Thread.PostNum }}</span>
