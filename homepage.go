@@ -32,7 +32,7 @@ func (p *HomePage) SetTime(t time.Time) {
 	p.modified = t
 }
 
-func (p HomePage) Handler() http.HandlerFunc {
+func (p HomePage) GetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		response, err := http.Get(apiEndpoint + "/boards")
 		if err != nil {
@@ -57,4 +57,8 @@ func (p HomePage) Handler() http.HandlerFunc {
 
 		p.template.Execute(w, boards)
 	}
+}
+
+func (p HomePage) PostHandler() http.HandlerFunc {
+	return nil
 }

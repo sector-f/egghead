@@ -12,6 +12,7 @@ import (
 )
 
 var apiEndpoint string = "http://127.0.0.1:8000"
+var bindAddr string = "127.0.0.1:8080"
 
 // var apiEndpoint string = "https://api.lambdachan.org/v1"
 
@@ -20,7 +21,8 @@ type Page interface {
 	Template() string
 	SetTemplate(*template.Template)
 	SetTime(time.Time)
-	Handler() http.HandlerFunc
+	GetHandler() http.HandlerFunc
+	PostHandler() http.HandlerFunc
 }
 
 func main() {
@@ -52,8 +54,14 @@ func main() {
 		fmt.Printf("succeeded\n")
 		page.SetTemplate(template)
 
-		r.Methods("GET").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.Handler()))
+		if page.GetHandler() != nil {
+			r.Methods("GET").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.GetHandler()))
+		}
+
+		if page.PostHandler() != nil {
+			r.Methods("POST").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.PostHandler()))
+		}
 	}
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(bindAddr, r)
 }

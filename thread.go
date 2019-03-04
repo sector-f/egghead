@@ -33,7 +33,7 @@ func (p *ThreadPage) SetTime(t time.Time) {
 	p.modified = t
 }
 
-func (p ThreadPage) Handler() http.HandlerFunc {
+func (p ThreadPage) GetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
@@ -70,4 +70,8 @@ func (p ThreadPage) Handler() http.HandlerFunc {
 
 		p.template.Execute(w, board)
 	}
+}
+
+func (p ThreadPage) PostHandler() http.HandlerFunc {
+	return nil
 }
