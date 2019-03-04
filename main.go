@@ -7,10 +7,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
 var apiEndpoint string = "http://127.0.0.1:8000"
+
+// var apiEndpoint string = "https://api.lambdachan.org/v1"
 
 type Page interface {
 	Route() string
@@ -28,6 +31,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", handlers.LoggingHandler(os.Stdout, http.FileServer(http.Dir("./static")))))
 
 	for _, page := range pages {
 		fmt.Printf("Loading %s...", page.Template())
@@ -48,10 +52,7 @@ func main() {
 		fmt.Printf("succeeded\n")
 		page.SetTemplate(template)
 
-		r.HandleFunc(
-			page.Route(),
-			page.Handler(),
-		)
+		r.Methods("GET").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.Handler()))
 	}
 
 	http.ListenAndServe(":8080", r)

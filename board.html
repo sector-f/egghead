@@ -8,13 +8,20 @@
 			/{{ .Board.Name }}/
 		{{ end }}
 		</title>
+		<link rel="stylesheet" href="/static/eggchan.css">
 	</head>
 	<body>
+		<form>
+			Name: <input type="text" name="author"><br>
+			Subject: <input type="text" name="subject"><br>
+			Comment: <input type="text" name="comment"><br>
+			<input type="submit" value="Post">
+		</form>
 		{{ $board := .Board.Name }}
 		{{ range .Threads }}
-		<div style="padding: 5px;">
+		<div class="post">
 			<div>
-				<span>{{ .Author }} - <a href="/{{ $board }}/{{ .PostNum }}">{{ .PostNum }}</a></span>
+				<span><span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} <a href="/{{ $board }}/{{ .PostNum }}">No.{{ .PostNum }}</a></span>
 			</div>
 			<div>
 				{{ .Comment }}

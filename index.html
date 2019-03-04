@@ -8,7 +8,11 @@
 	<body>
 		{{ range . }}
 		<p>
+			{{ if .Description.Valid }}
+			<a href="/{{ .Name }}">{{ .Name }}</a> - {{ .Description.String }}
+			{{ else }}
 			<a href="/{{ .Name }}">{{ .Name }}</a>
+			{{ end}}
 		</p>
 		{{ end }}
 	</body>

@@ -2,22 +2,27 @@
 <html>
 	<head>
 		<title>
-			/{{ .Thread.Board}}/ - {{ .Thread.PostNum }}
+		{{ if .Board.Description.Valid }}
+			/{{ .Board.Name }}/ - {{ .Board.Description.String }}
+		{{ else }}
+			/{{ .Board.Name }}/
+		{{ end }}
 		</title>
+		<link rel="stylesheet" href="/static/eggchan.css">
 	</head>
 	<body>
-		<div style="padding: 5px;">
+		<div class="post">
 			<div>
-				<span>{{ .Thread.Author }} - {{ .Thread.PostNum }}</span>
+				<span><span class="username">{{ .Thread.Author }}</span> {{ .Thread.Time.Format "2006/1/2 15:04:05" }} No.{{ .Thread.PostNum }}</span>
 			</div>
 			<div>
 				{{ .Thread.Comment }}
 			</div>
 		</div>
 		{{ range .Posts }}
-		<div style="padding: 5px;">
+		<div class="post">
 			<div>
-				<span>{{ .Author }} - {{ .PostNum }}</span>
+				<span><span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} No.{{ .PostNum }}</span>
 			</div>
 			<div>
 				{{ .Comment }}

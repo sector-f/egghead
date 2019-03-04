@@ -1,0 +1,17 @@
+html {
+	background-color: #fff7dd;
+}
+
+span.username {
+	color: green;
+}
+
+div.post {
+	padding: 10px;
+	margin: 10px;
+	border-color: #ffefbc;
+	border-width: 1px;
+	border-style: solid;
+	display: table;
+	background-color: #fff2c9;
+}
