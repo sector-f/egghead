@@ -2,11 +2,7 @@
 <html>
 	<head>
 		<title>
-		{{ if .Board.Description.Valid }}
-			/{{ .Board.Name }}/ - {{ .Board.Description.String }}
-		{{ else }}
-			/{{ .Board.Name }}/
-		{{ end }}
+		/{{ .Board.Name }}/ - {{ .Board.Description.String }}
 		</title>
 		<link rel="stylesheet" href="/static/eggchan.css">
 	</head>
