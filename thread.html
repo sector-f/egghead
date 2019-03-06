@@ -14,7 +14,11 @@
 		</form>
 		<div class="post">
 			<div>
+				{{ if .Thread.Subject.Valid }}
+				<span><span class="subject">{{ .Thread.Subject.String }}</span> <span class="username">{{ .Thread.Author }}</span> {{ .Thread.Time.Format "2006/1/2 15:04:05" }} No.{{ .Thread.PostNum }}</span>
+				{{ else }}
 				<span><span class="username">{{ .Thread.Author }}</span> {{ .Thread.Time.Format "2006/1/2 15:04:05" }} No.{{ .Thread.PostNum }}</span>
+				{{ end }}
 			</div>
 			<div>
 				{{ .Thread.Comment }}

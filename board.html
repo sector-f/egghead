@@ -17,7 +17,11 @@
 		{{ range .Threads }}
 		<div class="post">
 			<div>
+				{{ if .Subject.Valid }}
+				<span><span class="subject">{{ .Subject.String }}</span> <span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} <a href="/{{ $board }}/{{ .PostNum }}">No.{{ .PostNum }}</a></span>
+				{{ else }}
 				<span><span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} <a href="/{{ $board }}/{{ .PostNum }}">No.{{ .PostNum }}</a></span>
+				{{ end }}
 			</div>
 			<div>
 				{{ .Comment }}

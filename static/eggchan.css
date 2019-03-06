@@ -2,6 +2,10 @@ html {
 	background-color: #fff7dd;
 }
 
+span.subject {
+	color: blue;
+}
+
 span.username {
 	color: green;
 }
@@ -13,5 +17,6 @@ div.post {
 	border-width: 1px;
 	border-style: solid;
 	display: table;
-	background-color: #fff2c9;
+	/* background-color: #fff2c9; */
+	background-color: #ffefbc;
 }
