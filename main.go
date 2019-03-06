@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -11,10 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var apiEndpoint string = "http://127.0.0.1:8000"
-var bindAddr string = "127.0.0.1:8080"
-
-// var apiEndpoint string = "https://api.lambdachan.org/v1"
+var bindAddr, apiEndpoint, webroot string
 
 type Page interface {
 	Route() string
@@ -26,6 +24,11 @@ type Page interface {
 }
 
 func main() {
+	flag.StringVar(&bindAddr, "bind", "127.0.0.1:8080", "Address to bind to")
+	flag.StringVar(&apiEndpoint, "api", "http://127.0.0.1:8000", "Backend address to connect to")
+	flag.StringVar(&webroot, "webroot", "./", "Directory to look for web files in")
+	flag.Parse()
+
 	pages := []Page{
 		&HomePage{},
 		&BoardPage{},
@@ -33,12 +36,12 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", handlers.LoggingHandler(os.Stdout, http.FileServer(http.Dir("./static")))))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", handlers.LoggingHandler(os.Stdout, http.FileServer(http.Dir(webroot+"static")))))
 
 	for _, page := range pages {
 		fmt.Printf("Loading %s...", page.Template())
 
-		template, err := template.ParseFiles(page.Template())
+		template, err := template.ParseFiles(webroot + page.Template())
 		if err != nil {
 			fmt.Printf("failed: %s\n", err)
 			continue
@@ -63,5 +66,6 @@ func main() {
 		}
 	}
 
+	fmt.Println("Now listening on", bindAddr)
 	http.ListenAndServe(bindAddr, r)
 }
