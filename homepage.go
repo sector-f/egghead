@@ -34,15 +34,15 @@ func (p *HomePage) SetTime(t time.Time) {
 
 func (p HomePage) GetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		response, err := http.Get(apiEndpoint + "/boards")
+		response, err := http.Get(apiEndpoint + "/categories")
 		if err != nil {
 			return // TODO: add actual error handling
 		}
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
-		boards := []eggchan.Board{}
-		json.Unmarshal(body, &boards)
+		categories := []eggchan.Category{}
+		json.Unmarshal(body, &categories)
 
 		fileInfo, err := os.Stat(p.Template())
 		if err == nil {
@@ -55,7 +55,7 @@ func (p HomePage) GetHandler() http.HandlerFunc {
 			}
 		}
 
-		p.template.Execute(w, boards)
+		p.template.Execute(w, categories)
 	}
 }
 

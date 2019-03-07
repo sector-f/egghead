@@ -4,16 +4,14 @@
 		<title>
 			LambdaChan
 		</title>
+		<link rel="stylesheet" href="/static/style.css">
 	</head>
 	<body>
 		{{ range . }}
-		<p>
-			{{ if .Description.Valid }}
-			<a href="/{{ .Name }}">{{ .Name }}</a> - {{ .Description.String }}
-			{{ else }}
-			<a href="/{{ .Name }}">{{ .Name }}</a>
-			{{ end}}
-		</p>
+		<div><u>{{ .Name }}</u></div>
+		{{ range .Boards }}
+		<div><a href="/{{ .Name }}">{{ .Name }}</a> - {{ .Description }}</div>
+		{{ end }}
 		{{ end }}
 	</body>
 </html>
