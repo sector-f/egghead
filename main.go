@@ -38,18 +38,21 @@ func main() {
 	r := mux.NewRouter()
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", handlers.LoggingHandler(os.Stdout, http.FileServer(http.Dir(webroot+"static")))))
 
+	pagesOk := true
 	for _, page := range pages {
 		fmt.Printf("Loading %s...", page.Template())
 
 		template, err := template.ParseFiles(webroot + page.Template())
 		if err != nil {
 			fmt.Printf("failed: %s\n", err)
+			pagesOk = false
 			continue
 		}
 
 		fileInfo, err := os.Stat(page.Template())
 		if err != nil {
 			fmt.Printf("failed: could not stat file\n")
+			pagesOk = false
 			continue
 		}
 		page.SetTime(fileInfo.ModTime())
@@ -64,6 +67,11 @@ func main() {
 		if page.PostHandler() != nil {
 			r.Methods("POST").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.PostHandler()))
 		}
+	}
+
+	if !pagesOk {
+		fmt.Println("Exiting due to error(s)")
+		os.Exit(1)
 	}
 
 	fmt.Println("Now listening on", bindAddr)
