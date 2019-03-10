@@ -12,8 +12,8 @@
 			Comment: <input type="text" name="comment"><br>
 			<input type="submit" value="Post">
 		</form>
-		<div class="post">
-			<div>
+		<div class="post-container">
+			<div class="post-info">
 				{{ if .Thread.Subject.Valid }}
 				<span><span class="subject">{{ .Thread.Subject.String }}</span> <span class="username">{{ .Thread.Author }}</span> {{ .Thread.Time.Format "2006/1/2 15:04:05" }} No.{{ .Thread.PostNum }}</span>
 				{{ else }}
@@ -25,8 +25,8 @@
 			</div>
 		</div>
 		{{ range .Posts }}
-		<div class="post">
-			<div>
+		<div class="post-container">
+			<div class="post-info">
 				<span><span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} No.{{ .PostNum }}</span>
 			</div>
 			<div>

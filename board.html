@@ -15,17 +15,22 @@
 		</form>
 		{{ $board := .Board.Name }}
 		{{ range .Threads }}
-		<div class="post">
-			<div>
+		<div class="post-container">
+			<div class="post-info">
 				{{ if .Subject.Valid }}
 				<span><span class="subject">{{ .Subject.String }}</span> <span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} <a href="/{{ $board }}/{{ .PostNum }}">No.{{ .PostNum }}</a></span>
 				{{ else }}
 				<span><span class="username">{{ .Author }}</span> {{ .Time.Format "2006/1/2 15:04:05" }} <a href="/{{ $board }}/{{ .PostNum }}">No.{{ .PostNum }}</a></span>
 				{{ end }}
 			</div>
-			<div>
+			<div class=comment>
 				{{ .Comment }}
 			</div>
+			{{ if eq .NumReplies 1 }}
+			<span class="summary">{{ .NumReplies }} reply</span>
+			{{ else }}
+			<span class="summary">{{ .NumReplies }} replies</span>
+			{{ end }}
 		</div>
 		{{ end }}
 	</body>

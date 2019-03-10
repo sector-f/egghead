@@ -10,7 +10,13 @@ span.username {
 	color: green;
 }
 
-div.post {
+span.summary {
+	/* margin-top: 3px; */
+	color: gray;
+	display: table;
+}
+
+div.post-container {
 	padding: 10px;
 	margin: 10px;
 	border-color: #ffefbc;
@@ -19,4 +25,12 @@ div.post {
 	display: table;
 	/* background-color: #fff2c9; */
 	background-color: #ffefbc;
+}
+
+div.post-info {
+}
+
+div.comment {
+	/* margin-top: 3px; */
+	/* margin-bottom: 5px; */
 }
