@@ -36,11 +36,28 @@ func (p HomePage) GetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		response, err := http.Get(apiEndpoint + "/categories")
 		if err != nil {
-			return // TODO: add actual error handling
+			w.WriteHeader(http.StatusGatewayTimeout)
+			errMessage := errorMessage{http.StatusGatewayTimeout, "Gateway error"}
+			errorTemplate.Execute(w, errMessage)
+			return
 		}
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
+
+		switch response.StatusCode {
+		case http.StatusOK:
+			break
+		default:
+			reply := errorReply{}
+			json.Unmarshal(body, &reply)
+
+			w.WriteHeader(response.StatusCode)
+			errMessage := errorMessage{response.StatusCode, reply.Error}
+			errorTemplate.Execute(w, errMessage)
+			return
+		}
+
 		categories := []eggchan.Category{}
 		json.Unmarshal(body, &categories)
 
