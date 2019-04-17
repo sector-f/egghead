@@ -34,3 +34,8 @@ div.comment {
 	/* margin-top: 3px; */
 	/* margin-bottom: 5px; */
 }
+
+div.errorcontainer {
+	font-family: monospace;
+	font-size: 4em;
+}

@@ -26,7 +26,9 @@ func init() {
 		<link rel="stylesheet" href="/static/style.css">
 	</head>
 	<body>
+		<div class="errorcontainer">
 			{{ .StatusCode }} - {{ .StatusMessage }}
+		</div>
 	</body>
 </html>`)
 
