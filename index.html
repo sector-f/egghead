@@ -7,12 +7,14 @@
 		<link rel="stylesheet" href="/static/style.css">
 	</head>
 	<body>
-		{{ range . }}
+		{{ range . -}}
+		{{ if .Boards }}
 		<div><u>{{ .Name }}</u></div>
-		{{ range .Boards }}
+		{{ range .Boards -}}
 		<div><a href="/{{ .Name }}">{{ .Name }}</a> - {{ .Description }}</div>
 		{{ end }}
 		<br>
-		{{ end }}
+		{{- end }}
+		{{- end }}
 	</body>
 </html>
