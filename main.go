@@ -62,6 +62,7 @@ func main() {
 
 		if page.GetHandler() != nil {
 			r.Methods("GET").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.GetHandler()))
+			r.Methods("HEAD").Path(page.Route()).Handler(handlers.LoggingHandler(os.Stdout, page.GetHandler()))
 		}
 
 		if page.PostHandler() != nil {
