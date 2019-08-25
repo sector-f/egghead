@@ -35,7 +35,7 @@ func main() {
 		&ThreadPage{},
 	}
 
-	r := mux.NewRouter()
+	r := mux.NewRouter().StrictSlash(true)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", handlers.LoggingHandler(os.Stdout, http.FileServer(http.Dir(webroot+"static")))))
 
 	pagesOk := true
